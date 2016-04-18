@@ -1,0 +1,15 @@
+{
+  "name": "deepsCrawler",
+  "version": "0.0.1",
+  "description": "Scrape deep web.",
+  "main": "app.js",
+  "author": "Ayba",
+  "dependencies": {
+    "express": "latest",
+    "request": "latest",
+    "cheerio": "latest",
+    "form-scraper": "0.0.4",
+    "promisified-request": "0.0.3",
+    "underscore": "~1.8.3"
+  }
+}
