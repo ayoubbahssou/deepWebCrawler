@@ -84,10 +84,16 @@ var app     = express();
                             //if yes add the new value to the choices' array
                             if(!($(this).attr("name") in formData)){
                                 formData[$(this).attr("name")]=[];
-                                formData[$(this).attr("name")].push($(this).val());
+                                var data={};
+                                data['value']=label;
+                                data['source']=source;
+                                formData[$(this).attr("name")].push(data);
                             }
                             else{
-                                formData[$(this).attr("name")].push($(this).val());
+                                var data={};
+                                data['value']=label;
+                                data['source']=source;
+                                formData[$(this).attr("name")].push(data);
                             }
                         }
                         else{
