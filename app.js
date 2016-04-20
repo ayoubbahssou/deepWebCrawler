@@ -8,9 +8,10 @@ var cheerio = require('cheerio');
 var app     = express();
 //app.get('/getForm', function(req, res){
     //URLs we're testing with
+    url3='https://accounts.google.com/SignUp?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ltmpl=default'
     url1='http://www.airfrance.com/MA/fr/local/process/standardbooking/SearchAction.do?';
     url2='http://www.booking.com/index.html?aid=309654;label=booking-be-en-emea-JOFDxcYL2n0dvFIqgaMlSQS63676439692:pl:ta:p1:p2812,000:ac:ap1t1:neg:fi:tikwd-22550641:lp1009974:li:dec:dm;ws=&gclid=Cj0KEQjw6My4BRD4ssKGvYvB-YsBEiQAJYd77et0hIUdPwnFJrAWKHX-MtO7nz4t-fqncbOYp2aVHA0aAraU8P8HAQ'
-    request(url2, function(error, response, html){
+    request(url3, function(error, response, html){
         if(!error){
             var $ = cheerio.load(html);
             //var $ = cheerio.load('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Title</title></head><body> <form action="demo_form.asp"> <label>First name:</label> <div><input type="text" name="firstname" value="Mickey"></div><br>  <label>Last name</label>  <input type="text" name="lastname" value="Mouse"><br><br>  <label for="male">Male</label><input type="radio" name="gender" id="male" value="male"><br><label for="female">Female</label><input type="radio" name="gender" id="female" value="female"><br><label for="other">Other</label><input type="radio" name="gender" id="other" value="other"><br><br><input type="submit" value="Submit"></form></body></html>');
@@ -47,7 +48,7 @@ var app     = express();
                    //check if the input fiel have a previous label/span/br tag
                     if(prev[0]  && prev[0].hasOwnProperty('name') && (prev[0].name=='label'|| prev[0].name=='span' || prev[0].name=='br')){
                         //the label of the inout field
-                        label=prev.text()
+                        label=prev.text().replace(/[\n\t\r]/g,"")
                         /*the source of the label
                         this will help us enhance the algorithm
                         n3erfo exactly where did we get the label from
@@ -56,12 +57,12 @@ var app     = express();
                         source='p'
                         //if not,then check if the input field's parent has a previous label/span/br tag
                     }else if(prevparent[0]  && prevparent[0].hasOwnProperty('name') && (prevparent[0].name=='label'|| prevparent[0].name=='span' || prevparent[0].name=='br')){
-                        label=prevparent.text()
+                        label=prevparent.text().replace(/[\n\t\r]/g,"")
                         //source=the Parent's Previous element PP
                         source='pp'
                         //if not then check if the input field has a previous label/span/br tag
                     }else if(prevgparent[0]  && prevgparent[0].hasOwnProperty('name') && (prevgparent[0].name=='label'|| prevgparent[0].name=='span' || prevgparent[0].name=='br')){
-                        label=prevgparent.text()
+                        label=prevgparent.text().replace(/[\n\t\r]/g,"")
                         //source=the Grand Parent's Previous element GPP
 
                         source='gpp'
