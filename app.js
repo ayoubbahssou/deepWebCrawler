@@ -20,7 +20,7 @@ app.get('/',function(req, res){
     url3='https://accounts.google.com/SignUp?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ltmpl=default'
     url1='http://www.airfrance.com/MA/fr/local/process/standardbooking/SearchAction.do?';
     url2='http://www.booking.com/index.html?aid=309654;label=booking-be-en-emea-JOFDxcYL2n0dvFIqgaMlSQS63676439692:pl:ta:p1:p2812,000:ac:ap1t1:neg:fi:tikwd-22550641:lp1009974:li:dec:dm;ws=&gclid=Cj0KEQjw6My4BRD4ssKGvYvB-YsBEiQAJYd77et0hIUdPwnFJrAWKHX-MtO7nz4t-fqncbOYp2aVHA0aAraU8P8HAQ'
-    request(url1, function(error, response, html){
+    request(url5, function(error, response, html){
         if(!error){
             //var html='<body><form><fieldset id="whereFields"><dl><dt><label>before</label></dt><dd><input type="text" class="locationAutocomplete text ui-autocomplete-input" name="search_location_name" id="advanced_search_location_name" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"><input type="hidden" name="search_location" id="advanced_search_location" class="hidden"></dd></dl></fieldset></form></body></html>'
             var $ = cheerio.load(html);
@@ -46,18 +46,9 @@ app.get('/',function(req, res){
 
                 };
                 //we'll process each input field
-                formDom.find("input").each( function () {
+                formDom.find("input").each( function (index) {
                    // console.log('the input')
-                    var  fieldsetLookUp=$(this).parent();
-                    while(fieldsetLookUp[0]  && fieldsetLookUp[0].hasOwnProperty('name') && fieldsetLookUp[0].name!='form' && fieldsetLookUp[0].name!='fieldset'){
-                        fieldsetLookUp=fieldsetLookUp.parent();
-                    }
-                    if( fieldsetLookUp[0].name=='fieldset'){
-                        console.log('this input belongs to a fieldset!');
-
-                    }else{
-                        console.log('this input doesn\'t belongs to a fieldset!');
-                    }
+                   
                     //get the previous element
 
                     var prev=$(this).prev();
@@ -114,12 +105,42 @@ app.get('/',function(req, res){
                         //source=the attribut name of the inut field
                         source='attr'
                     }
-                    /*
-                    we'll face some problems processing radio input and <select>
-                    the if bellow treats the case of the input=radio
-                    note to self:add <select> case
-                     */
-                     if($(this).attr("type")=='radio'){
+
+
+                    var  fieldsetLookUp=$(this).parent();
+                    while(fieldsetLookUp[0]  && fieldsetLookUp[0].hasOwnProperty('name') && fieldsetLookUp[0].name!='form' && fieldsetLookUp[0].name!='fieldset'){
+                        fieldsetLookUp=fieldsetLookUp.parent();
+                    }
+                    if( fieldsetLookUp[0].name=='fieldset'){
+                        var id;
+                        console.log('this input belongs to a fieldset!');
+                        if(fieldsetLookUp.attr('id')){
+                            id=fieldsetLookUp.attr('id');
+                        }else if(fieldsetLookUp.attr('class')){
+                            id=fieldsetLookUp.attr('class');
+                        }else{
+                            fieldsetLookUp.attr('id',index);
+                            id=index;
+                            //console.log(fieldsetLookUp.html())
+                        }
+                        if(!(id in formData)){
+                            formData[id]=[];
+                            var data={};
+                            data['value']=label;
+                            data['source']=source;
+                            formData[id].push(data);
+                        }
+                        else{
+                            var data={};
+                            data['value']=label;
+                            data['source']=source;
+                            formData[id].push(data);
+                        }
+
+
+                    }else{
+                        console.log('this input doesn\'t belongs to a fieldset!');
+                        if($(this).attr("type")=='radio'){
                             //in this case then the input type is multichoice
                             //check if we already handeled an input with the same name
                             //if no then we first create the array then we push the choice
@@ -142,6 +163,14 @@ app.get('/',function(req, res){
                             //if it's not radio then we simply add it to the formData
                             addDataToFormData(label,$(this).attr("type"),source);
                         }
+
+                    }
+                    
+                    /*
+                    we'll face some problems processing radio input and <select>
+                    the if bellow treats the case of the input=radio
+                    note to self:add <select> case
+                     */
 
             });
                 formDom.find("select").each( function () {
