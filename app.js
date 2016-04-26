@@ -50,6 +50,7 @@ app.get('/',function(req, res){
                    // console.log('the input')
                     //get the previous element
                     var prev=$(this).prev();
+                    var parent=$(this).parent();
                     //get the parent's previous element
                     var prevparent=$(this).parent().prev();
                     //get the parent's parent's previous element (grand paarent :D)
@@ -66,6 +67,11 @@ app.get('/',function(req, res){
                         //source=orevious
                         source='p'
                         //if not,then check if the input field's parent has a previous label/span/br tag
+                    }else if(parent[0]  && parent[0].hasOwnProperty('name') && (parent[0].name=='label'|| parent[0].name=='span' || parent[0].name=='br')){
+                        label=parent.text().replace(/[\n\t\r]/g,"")
+                        //source=the Parent's Previous element PP
+                        source='parent'
+                        //if not then check if the input field has a previous label/span/br tag
                     }else if(prevparent[0]  && prevparent[0].hasOwnProperty('name') && (prevparent[0].name=='label'|| prevparent[0].name=='span' || prevparent[0].name=='br')){
                         label=prevparent.text().replace(/[\n\t\r]/g,"")
                         //source=the Parent's Previous element PP
@@ -192,6 +198,6 @@ app.get('/',function(req, res){
    // res.send(resObj)
 //});
 
-app.listen('8081')
+app.listen('8082')
 console.log('Magic happens on port 8081');
 
