@@ -20,7 +20,7 @@ app.get('/',function(req, res){
     url3='https://accounts.google.com/SignUp?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ltmpl=default'
     url1='http://www.airfrance.com/MA/fr/local/process/standardbooking/SearchAction.do?';
     url2='http://www.booking.com/index.html?aid=309654;label=booking-be-en-emea-JOFDxcYL2n0dvFIqgaMlSQS63676439692:pl:ta:p1:p2812,000:ac:ap1t1:neg:fi:tikwd-22550641:lp1009974:li:dec:dm;ws=&gclid=Cj0KEQjw6My4BRD4ssKGvYvB-YsBEiQAJYd77et0hIUdPwnFJrAWKHX-MtO7nz4t-fqncbOYp2aVHA0aAraU8P8HAQ'
-    request(url5, function(error, response, html){
+    request(url1, function(error, response, html){
         if(!error){
             //var html='<body><form><fieldset id="whereFields"><dl><dt><label>before</label></dt><dd><input type="text" class="locationAutocomplete text ui-autocomplete-input" name="search_location_name" id="advanced_search_location_name" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"><input type="hidden" name="search_location" id="advanced_search_location" class="hidden"></dd></dl></fieldset></form></body></html>'
             var $ = cheerio.load(html);
@@ -48,7 +48,18 @@ app.get('/',function(req, res){
                 //we'll process each input field
                 formDom.find("input").each( function () {
                    // console.log('the input')
+                    var  fieldsetLookUp=$(this).parent();
+                    while(fieldsetLookUp[0]  && fieldsetLookUp[0].hasOwnProperty('name') && fieldsetLookUp[0].name!='form' && fieldsetLookUp[0].name!='fieldset'){
+                        fieldsetLookUp=fieldsetLookUp.parent();
+                    }
+                    if( fieldsetLookUp[0].name=='fieldset'){
+                        console.log('this input belongs to a fieldset!');
+
+                    }else{
+                        console.log('this input doesn\'t belongs to a fieldset!');
+                    }
                     //get the previous element
+
                     var prev=$(this).prev();
                     var parent=$(this).parent();
                     //get the parent's previous element
@@ -77,7 +88,7 @@ app.get('/',function(req, res){
                         //source=the Parent's Previous element PP
                         source='pp'
                         //if not then check if the input field has a previous label/span/br tag
-                    }else if(prevparent[0]  && prevparent.children().first()[0].hasOwnProperty('name') && (prevparent.children().first()[0].name=='label'|| prevparent.children().first()[0].name=='span' || prevparent.children().first()[0].name=='br')){
+                    }else if(prevparent[0]  && prevparent.children().first()[0] &&prevparent.children().first()[0].hasOwnProperty('name') && (prevparent.children().first()[0].name=='label'|| prevparent.children().first()[0].name=='span' || prevparent.children().first()[0].name=='br')){
 //                        label=prevparent.children().first().text().replace(/[\n\t\r]/g,"")
                         if(''!=prevparent.children().first().text()){
                             label=prevparent.children().first().text()
