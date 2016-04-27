@@ -124,20 +124,34 @@ app.get('/',function(req, res){
                             //console.log(fieldsetLookUp.html())
                         }
                         if(!(id in formData)){
-                            formData[id]=[];
-                            var data={};
-                            data['value']=label;
-                            data['source']=source;
-                            formData[id].push(data);
-                        }
-                        else{
-                            var data={};
-                            data['value']=label;
-                            data['source']=source;
-                            formData[id].push(data);
+                            formData[id]={};
+
                         }
 
+                        if($(this).attr("type")=='radio'){
+                            //in this case then the input type is multichoice
+                            //check if we already handeled an input with the same name
+                            //if no then we first create the array then we push the choice
+                            //if yes add the new value to the choices' array
 
+                            if(!($(this).attr("name") in formData[id])) {
+                                formData[id][$(this).attr("name")] = [];
+                            }
+                                var data={};
+                                data['value']=label;
+                                data['source']=source;
+                                formData[id][$(this).attr("name")].push(data);
+
+                        }else{
+
+
+                            var data={};
+                            data['type']=$(this).attr("type");
+                            data['source']=source;
+                            formData[id][label]=data;
+
+
+                        }
                     }else{
                         console.log('this input doesn\'t belongs to a fieldset!');
                         if($(this).attr("type")=='radio'){
@@ -145,19 +159,13 @@ app.get('/',function(req, res){
                             //check if we already handeled an input with the same name
                             //if no then we first create the array then we push the choice
                             //if yes add the new value to the choices' array
-                            if(!($(this).attr("name") in formData)){
-                                formData[$(this).attr("name")]=[];
+                            if(!($(this).attr("name") in formData)) {
+                                formData[$(this).attr("name")] = [];
+                            }
                                 var data={};
                                 data['value']=label;
                                 data['source']=source;
                                 formData[$(this).attr("name")].push(data);
-                            }
-                            else{
-                                var data={};
-                                data['value']=label;
-                                data['source']=source;
-                                formData[$(this).attr("name")].push(data);
-                            }
                         }
                         else{
                             //if it's not radio then we simply add it to the formData
@@ -230,8 +238,7 @@ app.get('/',function(req, res){
                 counter++;
                 //res.send(formData)
             })
-        }
-        else{
+        }else{
             console.log('oops!!check the internet cnx')
         }
     });
@@ -239,5 +246,5 @@ app.get('/',function(req, res){
 //});
 
 app.listen('8082')
-console.log('Magic happens on port 8081');
+console.log('Magic happens on port 8082');
 
