@@ -11,7 +11,7 @@ var app     = express();
 app.get('/',function(req, res){
     res.render(index.html);
 })
-//app.get('/getForm', function(req, res){
+app.get('/getForm', function(req, res){
     var resObj={};
     var counter=0;
     //URLs we're testing with
@@ -20,8 +20,11 @@ app.get('/',function(req, res){
     url3='https://accounts.google.com/SignUp?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ltmpl=default'
     url1='http://www.airfrance.com/MA/fr/local/process/standardbooking/SearchAction.do?';
     url2='http://www.booking.com/index.html?aid=309654;label=booking-be-en-emea-JOFDxcYL2n0dvFIqgaMlSQS63676439692:pl:ta:p1:p2812,000:ac:ap1t1:neg:fi:tikwd-22550641:lp1009974:li:dec:dm;ws=&gclid=Cj0KEQjw6My4BRD4ssKGvYvB-YsBEiQAJYd77et0hIUdPwnFJrAWKHX-MtO7nz4t-fqncbOYp2aVHA0aAraU8P8HAQ'
-    request(url5, function(error, response, html){
+   var url=req.param('url')
+    console.log(req.param('url'))
+    request(url, function(error, response, html){
         if(!error){
+            //console.log(req.body)
             //var html='<body><form><fieldset id="whereFields"><dl><dt><label>before</label></dt><dd><input type="text" class="locationAutocomplete text ui-autocomplete-input" name="search_location_name" id="advanced_search_location_name" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"><input type="hidden" name="search_location" id="advanced_search_location" class="hidden"></dd></dl></fieldset></form></body></html>'
             var $ = cheerio.load(html);
             //var $ = cheerio.load('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Title</title></head><body> <form action="demo_form.asp"> <label>First name:</label> <div><input type="text" name="firstname" value="Mickey"></div><br>  <label>Last name</label>  <input type="text" name="lastname" value="Mouse"><br><br>  <label for="male">Male</label><input type="radio" name="gender" id="male" value="male"><br><label for="female">Female</label><input type="radio" name="gender" id="female" value="female"><br><label for="other">Other</label><input type="radio" name="gender" id="other" value="other"><br><br><input type="submit" value="Submit"></form></body></html>');
@@ -234,7 +237,7 @@ app.get('/',function(req, res){
                 })
 
                 console.log(formData);
-                resObj[counter]=formData;
+                resObj['form '+counter]=formData;
                 counter++;
                 //res.send(formData)
             })
@@ -242,8 +245,9 @@ app.get('/',function(req, res){
             console.log('oops!!check the internet cnx')
         }
     });
-   // res.send(resObj)
-//});
+    setTimeout(function(){  res.json(resObj);; }, 3000);
+
+});
 
 app.listen('8082')
 console.log('Magic happens on port 8082');
