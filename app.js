@@ -222,18 +222,52 @@ app.get('/getForm', function(req, res){
                         source='attr'
                     }
 
-                    var children=$(this)['0'].children;
-                    var optionsArray=[]
-                    var options = children.map(function(i,option) {
+                    var  fieldsetLookUp=$(this).parent();
+                    while(fieldsetLookUp[0]  && fieldsetLookUp[0].hasOwnProperty('name') && fieldsetLookUp[0].name!='form' && fieldsetLookUp[0].name!='fieldset'){
+                        fieldsetLookUp=fieldsetLookUp.parent();
+                    }
+                    if( fieldsetLookUp[0].name=='fieldset'){
+                        var id;
+                        console.log('this input belongs to a fieldset!');
+                        if(fieldsetLookUp.attr('id')){
+                            id=fieldsetLookUp.attr('id');
+                        }else if(fieldsetLookUp.attr('class')){
+                            id=fieldsetLookUp.attr('class');
+                        }else{
+                            fieldsetLookUp.attr('id',index);
+                            id=index;
+                            //console.log(fieldsetLookUp.html())
+                        }
+                        if(!(id in formData)){
+                            formData[id]={};
 
-                        if(i.name=='option') {
-                            optionsArray.push(i.children[0].data)
-                            //console.log(i.children[0].data)
-                     }
+                        }
+                        var children = $(this)['0'].children;
+                        var optionsArray = []
+                        var options = children.map(function (i, option) {
 
-                       //return option.value;
-                    });
-                    formData[label]=optionsArray;
+                            if (i.name == 'option') {
+                                optionsArray.push(i.children[0].data)
+                                //console.log(i.children[0].data)
+                            }
+
+                            //return option.value;
+                        });
+                        formData[id][label] = optionsArray;
+                    }else {
+                        var children = $(this)['0'].children;
+                        var optionsArray = []
+                        var options = children.map(function (i, option) {
+
+                            if (i.name == 'option') {
+                                optionsArray.push(i.children[0].data)
+                                //console.log(i.children[0].data)
+                            }
+
+                            //return option.value;
+                        });
+                        formData[label] = optionsArray;
+                    }
                 })
 
                 console.log(formData);
@@ -245,7 +279,7 @@ app.get('/getForm', function(req, res){
             console.log('oops!!check the internet cnx')
         }
     });
-    setTimeout(function(){  res.json(resObj);; }, 3000);
+    setTimeout(function(){  res.json(resObj);; }, 6000);
 
 });
 
