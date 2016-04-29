@@ -325,7 +325,7 @@ app.get('/getForm', function(req, res){
                                 child['name']=i.children[0].data;
                                 //child['children']=[];
                                 optionsArray.push(child);
-                     git a           //console.log(i.children[0].data)
+                                //console.log(i.children[0].data)
                             }
 
                             //return option.value;
