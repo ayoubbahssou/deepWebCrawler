@@ -8,12 +8,19 @@ var _=require('underscore')
 var util = require('util');
 var app     = express();
 //app.use(express.static(path.join(__dirname, 'public')));
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 app.get('/',function(req, res){
     res.render(index.html);
 })
 app.get('/getForm', function(req, res){
     var resObj={};
-    var counter=0;
+    resObj['name']='forms';
+    resObj['children']=[];
+    var counter=1;
     //URLs we're testing with
     url5='http://www.idealist.org/search/v2/advanced'
     url4='http://www.careerbuilder.com/jobseeker/jobs/jobfindadv.aspx';
@@ -39,6 +46,9 @@ app.get('/getForm', function(req, res){
                 var formDom = $(this);
                 //this is the object that well contain the form information
                 var formData = {};
+                formData['name']='form '+counter;
+
+                formData['children']=[]
                 var addDataToFormData = function(key, value,source) {
                     data={};
                     //the type of the input.ex: text or multiple choices...
@@ -126,32 +136,57 @@ app.get('/getForm', function(req, res){
                             id=index;
                             //console.log(fieldsetLookUp.html())
                         }
-                        if(!(id in formData)){
-                            formData[id]={};
+                        var cnt=0
+                        while(cnt<formData.children.length){
+                            if(formData.children[cnt].name!=id){
+                                cnt++;
+                            }else{
+                                break
+                            }
 
                         }
-
+                        if(cnt==formData.children.length){
+                            var child={}
+                            child['name']=id;
+                            child['children']=[]
+                            formData.children.push(child);
+                        }
                         if($(this).attr("type")=='radio'){
                             //in this case then the input type is multichoice
                             //check if we already handeled an input with the same name
                             //if no then we first create the array then we push the choice
                             //if yes add the new value to the choices' array
+                           var cntt=0
+                            while(cntt<formData.children[cnt].children.length){
+                                if(formData.children[cnt].children[cntt].name!=$(this).attr("name")){
+                                    cntt++;
+                                }else{
+                                    break
+                                }
 
-                            if(!($(this).attr("name") in formData[id])) {
-                                formData[id][$(this).attr("name")] = [];
                             }
-                                var data={};
-                                data['value']=label;
-                                data['source']=source;
-                                formData[id][$(this).attr("name")].push(data);
+                            if(cntt==formData.children[cnt].children.length){
+                                var child={}
+                                child['name']=$(this).attr("name");
+                                child['children']=[];
+                                formData.children[cnt].children.push(child);
+                            }
+
+                            var child={};
+                            child['name']=label;
+                            child['source']=source;
+                            //child['children']=[];
+                            formData.children[cnt].children[cntt].children.push(child);
 
                         }else{
 
 
-                            var data={};
-                            data['type']=$(this).attr("type");
-                            data['source']=source;
-                            formData[id][label]=data;
+                            var child={};
+                            child['type']=$(this).attr("type");
+                            child['source']=source;
+                            child['name']=label;
+                          //  child['children']=[];
+                            formData.children[cnt].children.push(child);
 
 
                         }
@@ -162,17 +197,36 @@ app.get('/getForm', function(req, res){
                             //check if we already handeled an input with the same name
                             //if no then we first create the array then we push the choice
                             //if yes add the new value to the choices' array
-                            if(!($(this).attr("name") in formData)) {
-                                formData[$(this).attr("name")] = [];
+                            var cnt=0
+                            while(cnt<formData.children.length){
+                                if(formData.children[cnt].name!=$(this).attr("name")){
+                                    cnt++;
+                                }else{
+                                    break
+                                }
+
                             }
-                                var data={};
-                                data['value']=label;
-                                data['source']=source;
-                                formData[$(this).attr("name")].push(data);
+                            if(cnt==formData.children.length){
+                                var child={}
+                                child['name']=$(this).attr("name");
+                                child['children']=[]
+                                formData.children.push(child);
+                            }
+                            var child={};
+                            child['name']=label;
+                            child['source']=source;
+                           // child['children']=[];
+                            formData.children[cnt].children.push(child);
                         }
                         else{
                             //if it's not radio then we simply add it to the formData
-                            addDataToFormData(label,$(this).attr("type"),source);
+                            //addDataToFormData(label,$(this).attr("type"),source);
+                            var child={};
+                            child['type']=$(this).attr("type");
+                            child['source']=source;
+                            child['name']=label;
+                            //child['children']=[];
+                            formData.children.push(child);
                         }
 
                     }
@@ -238,42 +292,68 @@ app.get('/getForm', function(req, res){
                             id=index;
                             //console.log(fieldsetLookUp.html())
                         }
-                        if(!(id in formData)){
-                            formData[id]={};
+                        var cnt=0
+                        while(cnt<formData.children.length){
+                            if(formData.children[cnt].name!=id){
+                                cnt++;
+                            }else{
+                                break
+                            }
 
                         }
+                        if(cnt==formData.children.length){
+                            var child={}
+                            child['name']=id;
+                            child['children']=[]
+                            formData.children.push(child);
+                        }
+
                         var children = $(this)['0'].children;
-                        var optionsArray = []
+                        var optionsArray = [];
                         var options = children.map(function (i, option) {
 
                             if (i.name == 'option') {
-                                optionsArray.push(i.children[0].data)
+                                var child={}
+                                child['name']=i.children[0].data;
+                                //child['children']=[];
+                                optionsArray.push(child);
                                 //console.log(i.children[0].data)
                             }
 
                             //return option.value;
                         });
-                        formData[id][label] = optionsArray;
+                        var child={}
+                        child['name']=label;
+                        child['children']=optionsArray
+
+                        formData.children[cnt].children.push(child);
                     }else {
                         var children = $(this)['0'].children;
                         var optionsArray = []
                         var options = children.map(function (i, option) {
 
                             if (i.name == 'option') {
-                                optionsArray.push(i.children[0].data)
-                                //console.log(i.children[0].data)
+                                var child={}
+                                child['name']=i.children[0].data;
+                                //child['children']=[];
+                                optionsArray.push(child);
                             }
 
                             //return option.value;
                         });
-                        formData[label] = optionsArray;
+                        var child={}
+                        child['name']=label;
+                        //child['children']=[];
+                        child['children']=optionsArray;
+
+                        formData.children.push(child);
                     }
                 })
 
                 console.log(formData);
-                resObj['form '+counter]=formData;
+                resObj.children.push(formData);
                 counter++;
-                //res.send(formData)
+
             })
         }else{
             console.log('oops!!check the internet cnx')
