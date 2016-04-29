@@ -179,15 +179,18 @@ app.get('/getForm', function(req, res){
                             formData.children[cnt].children[cntt].children.push(child);
 
                         }else{
-
-
+                            var type=''
+                            if($(this).attr("type")=='hidden'){
+                                type=' (hidden)'
+                            }
+                            //if($(this).attr("type")!='hidden'){
                             var child={};
                             child['type']=$(this).attr("type");
                             child['source']=source;
-                            child['name']=label;
+                            child['name']=label+type;
                           //  child['children']=[];
                             formData.children[cnt].children.push(child);
-
+                            //}
 
                         }
                     }else{
@@ -221,12 +224,17 @@ app.get('/getForm', function(req, res){
                         else{
                             //if it's not radio then we simply add it to the formData
                             //addDataToFormData(label,$(this).attr("type"),source);
+                            var type=''
+                            if($(this).attr("type")=='hidden'){
+                                type=' (hidden)'
+                            }
                             var child={};
                             child['type']=$(this).attr("type");
                             child['source']=source;
-                            child['name']=label;
+                            child['name']=label+type;
                             //child['children']=[];
                             formData.children.push(child);
+
                         }
 
                     }
@@ -317,7 +325,7 @@ app.get('/getForm', function(req, res){
                                 child['name']=i.children[0].data;
                                 //child['children']=[];
                                 optionsArray.push(child);
-                                //console.log(i.children[0].data)
+                     git a           //console.log(i.children[0].data)
                             }
 
                             //return option.value;
