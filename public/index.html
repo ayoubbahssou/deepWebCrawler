@@ -57,7 +57,7 @@ console.log
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 //'http://localhost:8082/getForm?url=http://www.idealist.org/search/v2/advanced'
-        d3.json('https://arcane-brook-73385.herokuapp.com//getForm?url='+document.getElementById("field1").value, function (error, flare) {
+        d3.json('https://arcane-brook-73385.herokuapp.com/getForm?url='+document.getElementById("field1").value, function (error, flare) {
             if (error) throw error;
 
 
