@@ -370,7 +370,12 @@ app.get('/getForm', function(req, res){
     setTimeout(function(){  res.json(resObj);; }, 6000);
 
 });
+app.set('port', (process.env.PORT || 8082));
+/*app.listen('8082')
+console.log('Magic happens on port 8082');*/
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
 
-app.listen('8082')
-console.log('Magic happens on port 8082');
+
 
