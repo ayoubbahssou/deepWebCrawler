@@ -34,7 +34,8 @@ insert the url here: <input type="text" id="field1"><br>
 <script>
   
     function scrapeForm() {
-console.log
+    	var svg = $("svg");
+    	svg.remove();
         // $.get( "http://localhost:8082/getForm?url=http://www.idealist.org/search/v2/advanced", function(root, status){
         var margin = {top: 20, right: 120, bottom: 20, left: 120},
                 width = 960 - margin.right - margin.left,
