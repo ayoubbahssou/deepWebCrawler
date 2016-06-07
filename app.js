@@ -36,10 +36,7 @@ app.get('/getForm', function(req, res){
             //var html='<body><form><fieldset id="whereFields"><dl><dt><label>before</label></dt><dd><input type="text" class="locationAutocomplete text ui-autocomplete-input" name="search_location_name" id="advanced_search_location_name" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"><input type="hidden" name="search_location" id="advanced_search_location" class="hidden"></dd></dl></fieldset></form></body></html>'
           //get a list of all the words in the page
             var $ = cheerio.load(html);
-            var wordList = $('body *').contents().filter(function () {
-                return this.nodeType == 3;
-            }).text().match(/[^\s]+/g);
-            console.log(wordList);
+         
             //var $ = cheerio.load('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Title</title></head><body> <form action="demo_form.asp"> <label>First name:</label> <div><input type="text" name="firstname" value="Mickey"></div><br>  <label>Last name</label>  <input type="text" name="lastname" value="Mouse"><br><br>  <label for="male">Male</label><input type="radio" name="gender" id="male" value="male"><br><label for="female">Female</label><input type="radio" name="gender" id="female" value="female"><br><label for="other">Other</label><input type="radio" name="gender" id="other" value="other"><br><br><input type="submit" value="Submit"></form></body></html>');
             /*
             for now we process all forms in the page
@@ -452,6 +449,57 @@ app.get('/getForm', function(req, res){
    </xs:element>
    </xs:schema>
   * */
+
+
+});
+app.get('/getWordList', function(req, res){
+
+
+    var url=req.param('url')
+    console.log(req.param('url'))
+    request.post({
+        headers: {'content-type' : 'application/x-www-form-urlencoded'},
+        url:     'http://www.seowebpageanalyzer.com/',
+        body:    "url="+req.param('url')
+    }, function(error, response, html){
+var wordList=[]
+        var $ = cheerio.load(html);
+       var table= $('table').first();
+       // console.log(table);
+        table.find("tr").each( function (i,element) {
+            var children = $(this).children();
+            var row = {
+                "keyword" : $(children[0]).text(),
+                "frequency" : $(children[1]).text()
+            };
+
+            wordList.push(row);
+        });
+
+        res.json(wordList)
+console.log(wordList)
+
+      /*  $('table').each(function(){
+i++;
+console.log('in'+i)
+
+        });*/
+
+    });
+   /* request(url, function(error, response, html){
+        if(!error){
+           
+            $('form').each(function(){
+
+
+                });
+
+        }else{
+            console.log('oops!!check the internet cnx')
+        }
+    });*/
+
+
 
 
 });
