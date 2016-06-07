@@ -427,6 +427,7 @@ app.get('/getForm', function(req, res){
             allowEmpty: false
         });
         console.log(xmlString);
+        resObj.xmls=xmlString;
         res.json(resObj); }, 6000);
   /*
   * <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"

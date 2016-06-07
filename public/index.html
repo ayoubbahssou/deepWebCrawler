@@ -21,13 +21,15 @@
         stroke: #ccc;
         stroke-width: 1.5px;
     }
-
 </style>
 <body>
 <div>
 insert the url here: <input type="text" id="field1"><br>
 <button onclick="scrapeForm()">scrape forms</button>
 </div>
+<xmp id="xmls">
+</xmp>
+
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js'></script>
 
@@ -60,6 +62,7 @@ insert the url here: <input type="text" id="field1"><br>
         d3.json('http://localhost:8082/getForm?url='+document.getElementById("field1").value, function (error, flare) {
             if (error) throw error;
 
+            document.getElementById("xmls").innerHTML = flare.xmls;
 
             root = flare;
             // console.log(root.children);
