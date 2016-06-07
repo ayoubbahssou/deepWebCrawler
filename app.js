@@ -4,7 +4,8 @@
 var express = require('express');
 var request = require('request');
 var cheerio = require('cheerio');
-var _=require('underscore')
+var _=require('underscore');
+var builder = require('xmlbuilder');
 var util = require('util');
 var app     = express();
 app.use(express.static(__dirname + '/public'));
@@ -332,6 +333,7 @@ app.get('/getForm', function(req, res){
                         });
                         var child={}
                         child['name']=label;
+                        child['type']="select";
                         child['children']=optionsArray
 
                         formData.children[cnt].children.push(child);
@@ -351,6 +353,7 @@ app.get('/getForm', function(req, res){
                         });
                         var child={}
                         child['name']=label;
+                        child['type']="select";
                         //child['children']=[];
                         child['children']=optionsArray;
 
@@ -367,7 +370,77 @@ app.get('/getForm', function(req, res){
             console.log('oops!!check the internet cnx')
         }
     });
-    setTimeout(function(){  res.json(resObj);; }, 6000);
+
+    setTimeout(function(){
+        //console.log(resObj)
+        var root = builder.create('xs:element',{'name': 'forms'});
+        var complexType=root.ele('xs:complexType');
+        var sequence=complexType.ele('xs:sequence');
+       for(var i = 0; i <resObj.children.length ; i++)
+        {
+            var form = sequence.ele('xs:element',{'name':'form '+i+1});
+            var complexType=form.ele('xs:complexType');
+            var sequence=complexType.ele('xs:sequence');
+            for(var j= 0; j <resObj.children[i].children.length ; j++){
+                if (resObj.children[i].children[j].hasOwnProperty('children')){
+                    if(resObj.children[i].children[j].type!='select'){
+                        //then it's a fieldset
+                        var fieldset = sequence.ele('xs:element',{'name':resObj.children[i].children[j].name});
+                        var complexType=fieldset.ele('xs:complexType');
+                        var sequence=complexType.ele('xs:sequence');
+                        for(var k= 0; k <resObj.children[i].children[j].children.length ; k++) {
+                            if(resObj.children[i].children[j].children[k].type=='select'){
+                                var select = sequence.ele('xs:element',{'name':resObj.children[i].children[j].children[k].name});
+                                var simpleType=select.ele('xs:simpleType');
+                                var restriction=simpleType.ele('xs:restriction',{'base':'xs:string'});
+                                for(var l= 0; l <resObj.children[i].children[j].children[k].children.length ; l++) {
+                                    var enumeration=restriction.ele('xs:enumeration',{'value':resObj.children[i].children[j].children[k].children[l].name})
+                                }
+                            }else{
+                                var element=sequence.ele('xs:element');
+                                element.att('name',resObj.children[i].children[j].children[k].name);
+                                element.att('type','xs:string')
+                            }
+                        }
+                    }else{
+                        //it's a select not a fieldset
+                        var select = sequence.ele('xs:element',{'name':resObj.children[i].children[j].name});
+                        var simpleType=select.ele('xs:simpleType');
+                        var restriction=simpleType.ele('xs:restriction',{'base':'xs:string'});
+                        for(var l= 0; l <resObj.children[i].children[j].children.length ; l++) {
+                            var enumeration=restriction.ele('xs:enumeration',{'value':resObj.children[i].children[j].children[l].name})
+                        }
+                    }
+                }else{
+                    //it's a simple element'
+                    var element=sequence.ele('xs:element');
+                    element.att('name',resObj.children[i].children[j].name);
+                    element.att('type','xs:string')
+                }
+
+            }
+        }
+        console.log(root.toString());
+        res.json(resObj); }, 6000);
+  /*
+  * <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+   targetNamespace="http://www.w3.com"
+   xmlns="http://www.w3.com" elementFormDefault="qualified">
+   <xs:element name="Personne">
+   <xs:complexType>
+   <xs:sequence>
+   <xs:element name="nom" type="xs:string"/>
+   <xs:element name="prenom" type="xs:string"/>
+   <xs:element name="poids" type="xs:integer"/>
+   <xs:element name="taille" type="xs:float"/>
+   <xs:element name="ddn" type="xs:date"/>
+   <xs:element name="adresse" type="xs:string"/>
+   </xs:sequence>
+   </xs:complexType>
+   </xs:element>
+   </xs:schema>
+  * */
+
 
 });
 app.set('port', (process.env.PORT || 8082));
