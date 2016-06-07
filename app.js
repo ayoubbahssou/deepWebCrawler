@@ -420,7 +420,13 @@ app.get('/getForm', function(req, res){
 
             }
         }
-        console.log(root.toString());
+        var xmlString = root.end({
+            pretty: true,
+            indent: '  ',
+            newline: '\n',
+            allowEmpty: false
+        });
+        console.log(xmlString);
         res.json(resObj); }, 6000);
   /*
   * <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
