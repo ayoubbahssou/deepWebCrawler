@@ -21,22 +21,58 @@
         stroke: #ccc;
         stroke-width: 1.5px;
     }
+    #section {
+        width:350px;
+        float:left;
+        padding:10px;
+    }
+    #nav {
+        line-height: 30px;
+        background-color: #eeeeee;
+        height: 300px;
+        width: 100px;
+        float: right;
+        padding: 5px;
+    }
 </style>
 <body>
 <div>
 insert the url here: <input type="text" id="field1"><br>
 <button onclick="scrapeForm()">scrape forms</button>
+    <button onclick="getKeyWords()">get key words</button>
 </div>
-
+<div id="nav">
+</div>
+<div id="section">
 <div style="height:200px; overflow-y:scroll">
 <xmp id="xmls">
 </xmp>
 </div>
+    </div>
+
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js'></script>
 
 <script>
-  
+    function getKeyWords() {
+        $.get( 'http://localhost:8082/getWordList?url='+document.getElementById("field1").value, function( data) {
+           //console.log(typeof(data))
+            var wordList=JSON.parse(data);
+           /// console.log(typeof(wordList))
+            var result = "<table border=1>";
+            for(var i=0; i<wordList.length; i++) {
+               var word=wordList[i];
+               // console.log(word);
+                //console.log(word.frequency)
+                result += "<tr>";
+                result += "<td>"+word.keyword+"</td>";
+                result += "<td>"+word.frequency+"</td>";
+                result += "</tr>";
+            }
+            result += "</table>";
+            document.getElementById("nav").innerHTML =result;
+        });
+    }
     function scrapeForm() {
 
         // $.get( "http://localhost:8082/getForm?url=http://www.idealist.org/search/v2/advanced", function(root, status){
