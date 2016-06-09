@@ -374,48 +374,61 @@ app.get('/getForm', function(req, res){
     });
 
     setTimeout(function(){
-        //console.log(resObj)
-        var root = builder.create('xs:element',{'name': 'forms'});
+
+        var schema = builder.create('xs:schema')
+           /* ,{
+            'xmlns':"http://www.w3.org/2001/XMLSchema",
+            'targetNamespace':"http://www.w3.com",
+            'xmlns':"http://www.w3.com",
+            'elementFormDefault':"qualified"
+        });*/
+        schema.att('xmlns',"http://www.w3.org/2001/XMLSchema");
+        schema.att('targetNamespace',"http://www.w3.com")
+        schema.att('xmlns',"http://www.w3.com")
+        schema.att('elementFormDefault',"qualified")
+
+        var root=schema.ele('xs:element',{'name': 'forms'});
+
         var complexType=root.ele('xs:complexType');
         var sequence=complexType.ele('xs:sequence');
        for(var i = 0; i <resObj.children.length ; i++)
         {
-            var form = sequence.ele('xs:element',{'name':'form '+i+1});
-            var complexType=form.ele('xs:complexType');
-            var sequence=complexType.ele('xs:sequence');
+            var form = sequence.ele('xs:element',{'name':resObj.children[i].name});
+            var complexType1=form.ele('xs:complexType');
+            var sequence1=complexType1.ele('xs:sequence');
             for(var j= 0; j <resObj.children[i].children.length ; j++){
                 if (resObj.children[i].children[j].hasOwnProperty('children')){
                     if(resObj.children[i].children[j].type!='select'){
                         //then it's a fieldset
-                        var fieldset = sequence.ele('xs:element',{'name':resObj.children[i].children[j].name});
-                        var complexType=fieldset.ele('xs:complexType');
-                        var sequence=complexType.ele('xs:sequence');
+                        var fieldset = sequence1.ele('xs:element',{'name':resObj.children[i].children[j].name});
+                        var complexType2=fieldset.ele('xs:complexType');
+                        var sequence2=complexType2.ele('xs:sequence');
                         for(var k= 0; k <resObj.children[i].children[j].children.length ; k++) {
                             if(resObj.children[i].children[j].children[k].type=='select'){
-                                var select = sequence.ele('xs:element',{'name':resObj.children[i].children[j].children[k].name});
-                                var simpleType=select.ele('xs:simpleType');
-                                var restriction=simpleType.ele('xs:restriction',{'base':'xs:string'});
+                                var select = sequence2.ele('xs:element',{'name':resObj.children[i].children[j].children[k].name});
+                                var simpleType2=select.ele('xs:simpleType');
+                                var restriction=simpleType2.ele('xs:restriction',{'base':'xs:string'});
                                 for(var l= 0; l <resObj.children[i].children[j].children[k].children.length ; l++) {
                                     var enumeration=restriction.ele('xs:enumeration',{'value':resObj.children[i].children[j].children[k].children[l].name})
                                 }
                             }else{
-                                var element=sequence.ele('xs:element');
+                                var element=sequence2.ele('xs:element');
                                 element.att('name',resObj.children[i].children[j].children[k].name);
                                 element.att('type','xs:string')
                             }
                         }
                     }else{
                         //it's a select not a fieldset
-                        var select = sequence.ele('xs:element',{'name':resObj.children[i].children[j].name});
-                        var simpleType=select.ele('xs:simpleType');
-                        var restriction=simpleType.ele('xs:restriction',{'base':'xs:string'});
+                        var select = sequence1.ele('xs:element',{'name':resObj.children[i].children[j].name});
+                        var simpleType1=select.ele('xs:simpleType');
+                        var restriction=simpleType1.ele('xs:restriction',{'base':'xs:string'});
                         for(var l= 0; l <resObj.children[i].children[j].children.length ; l++) {
                             var enumeration=restriction.ele('xs:enumeration',{'value':resObj.children[i].children[j].children[l].name})
                         }
                     }
                 }else{
                     //it's a simple element'
-                    var element=sequence.ele('xs:element');
+                    var element=sequence1.ele('xs:element');
                     element.att('name',resObj.children[i].children[j].name);
                     element.att('type','xs:string')
                 }
