@@ -10,6 +10,6 @@
     "cheerio": "latest",
     "underscore": "~1.8.3",
     "util": "~0.10.3",
-    "xmluilder":"~8.2.2"
+    "xmlbuilder":"~8.2.2"
   }
 }
