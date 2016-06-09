@@ -28,7 +28,7 @@
             <div id="nav" class="col-sm-6">
             </div>
             <div id="section" class="col-sm-6">
-                <div style="min-height: 250px; overflow-y:scroll">
+                <div style="height:250px; overflow-y:scroll">
                     <xmp id="xmls">
                     </xmp>
                 </div>
@@ -45,9 +45,9 @@
 
 <script>
     function getKeyWords() {
-        $.get( 'http://localhost:8082/getWordList?url='+document.getElementById("field1").value, function( data) {
-           //console.log(typeof(data))
-           var wordList=JSON.parse(data);
+        $.get( '/getWordList?url='+document.getElementById("field1").value, function( data) {
+           console.log(data)
+           var wordList=data;
            /// console.log(typeof(wordList))
            var result = "<table border=1>";
            for(var i=0; i<wordList.length; i++) {
@@ -88,7 +88,7 @@
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 //'http://localhost:8082/getForm?url=http://www.idealist.org/search/v2/advanced'
-d3.json('http://localhost:8082/getForm?url='+document.getElementById("field1").value, function (error, flare) {
+d3.json('/getForm?url='+document.getElementById("field1").value, function (error, flare) {
     if (error) throw error;
 
     document.getElementById("xmls").innerHTML = flare.xmls;
