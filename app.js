@@ -28,8 +28,8 @@ app.get('/getForm', function(req, res){
     url3='https://accounts.google.com/SignUp?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ltmpl=default'
     url1='http://www.airfrance.com/MA/fr/local/process/standardbooking/SearchAction.do?';
     url2='http://www.booking.com/index.html?aid=309654;label=booking-be-en-emea-JOFDxcYL2n0dvFIqgaMlSQS63676439692:pl:ta:p1:p2812,000:ac:ap1t1:neg:fi:tikwd-22550641:lp1009974:li:dec:dm;ws=&gclid=Cj0KEQjw6My4BRD4ssKGvYvB-YsBEiQAJYd77et0hIUdPwnFJrAWKHX-MtO7nz4t-fqncbOYp2aVHA0aAraU8P8HAQ'
-   var url=req.param('url')
-    console.log(req.param('url'))
+   var url=req.query['url']
+    console.log(url)
     request(url, function(error, response, html){
         if(!error){
             //console.log(req.body)
