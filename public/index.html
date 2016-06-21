@@ -1,57 +1,116 @@
-<!DOCTYPE html>
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="stylesheets/style.css"/>
-    <link rel="stylesheet" href="stylesheets/bootstrap.min.css"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-</head>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style2.css" rel="stylesheet">
+<style type="text/css"></style></head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
 <body>
-    <div class="container">
 
-        <div class="row" style="margin-top: 15px;">
-            <label class="control-label col-sm-2">insert the url here:</label>
-            <div class="col-sm-6">
-                <input type="text" id="field1" class="form-control"/>
-            </div>
-            <div class="btn-group col-sm-4">
-                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Action <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a onclick="scrapeForm()" class="btn">scrape forms</a></li>
-                    <li><a onclick="getKeyWords()" class="btn">get key words</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="row">
-            <div id="nav" class="col-sm-6">
-            </div>
-            <div id="section" class="col-sm-6">
-                <div style="height:250px; overflow-y:scroll">
-                    <xmp id="xmls">
-                    </xmp>
-                </div>
-            </div>
-        </div>
-        <div id="svg" class="row"></div>
+	<div class="wpc-menu-wrap">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-9 col-lg-7 col-lg-offset-3 no-padding">
+					<nav class="wpc-nav-menu">
+						<ul class="main-menu">
+							<li class="menu-item active menu-item-has-children" style="margin-right: 24px;">
+								<a href="index.html">Scrapping</a>
+							</li>
+							<li class="menu-item menu-item-has-children">
+								<a onclick="formQuery()" >Form Quering</a>
+							</li>
 
-    </div>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="wpc-search-domain">
+		<div class="container-fluid no-padding">
+			<div class="row no-margin">
+				<div class="col-sm-12 no-padding">
+					<form action="#" class="form-search">
+						<div class="container no-padding-sm">
+							<div class="row">
+								<div class="col-sm-1 col-md-offset-2 no-padding-md">
+								</div>
+								<div class="col-sm-5 no-padding-sm">
+									<input type="text" id="field1" class="field-search" name="field1" id="search" placeholder="Entrez l'URL ...">
+								</div>
+								<div class="btn-group col-sm-4">
+									<button type="button" class="btn wpc-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										Action <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li><a onclick="scrapeForm()" class="btn">scrape forms</a></li>
+										<li><a onclick="getKeyWords()" class="btn">get key words</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</form>
+					<div class="divider"></div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
 
+	
+
+	<div class="wpc-pricing light-blue">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="heading">Schema XML</div>
+					<xmp id="xmls" style="height:250px; overflow-y:scroll">
+					</xmp>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	<div class="wpc-pricing white">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="heading">Tableau des mots</div>
+					<div id="nav" class="col-sm-6"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="wpc-pricing light-blue">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="heading">Schema</div>
+					<div id="svg" class="row"></div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	
 </body>
-
 <script src="https://d3js.org/d3.v3.min.js"></script>
 
 
 <script>
-    function getKeyWords() {
-        $.get( '/getWordList?url='+document.getElementById("field1").value, function( data) {
-           console.log(data)
-           var wordList=data;
+function formQuery() {
+		//$.get( 'http://localhost/index.php?url='+document.getElementById("field1").value)
+location.href="http://localhost/index.php?url="+document.getElementById("field1").value;
+}	
+function getKeyWords() {
+		$.get( '/getWordList?url='+document.getElementById("field1").value, function( data) {
+			console.log(data)
+			var wordList=data;
            /// console.log(typeof(wordList))
            var result = "<table border=1>";
            for(var i=0; i<wordList.length; i++) {
-             var word=wordList[i];
+           	var word=wordList[i];
                // console.log(word);
                 //console.log(word.frequency)
                 result += "<tr>";
@@ -62,49 +121,49 @@
             result += "</table>";
             document.getElementById("nav").innerHTML =result;
         });
-    }
-    function scrapeForm() {
+	}
+	function scrapeForm() {
 
         // $.get( "http://localhost:8082/getForm?url=http://www.idealist.org/search/v2/advanced", function(root, status){
-            var margin = {top: 20, right: 120, bottom: 20, left: 120},
-            width = 960 - margin.right - margin.left,
-            height = 800 - margin.top - margin.bottom;
+        	var margin = {top: 20, right: 120, bottom: 20, left: 120},
+        	width = 960 - margin.right - margin.left,
+        	height = 800 - margin.top - margin.bottom;
 
-            var i = 0,
-            duration = 750;
+        	var i = 0,
+        	duration = 750;
 
-            var tree = d3.layout.tree()
-            .size([height, width]);
+        	var tree = d3.layout.tree()
+        	.size([height, width]);
 
-            var diagonal = d3.svg.diagonal()
-            .projection(function (d) {
-                return [d.y, d.x];
-            });
+        	var diagonal = d3.svg.diagonal()
+        	.projection(function (d) {
+        		return [d.y, d.x];
+        	});
 
-            var svg = d3.select("#svg").append("svg")
-            /*.attr("width", width + margin.right + margin.left)*/
-            .attr("width", "100%")
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        	var svg = d3.select("#svg").append("svg")
+        	/*.attr("width", width + margin.right + margin.left)*/
+        	.attr("width", "100%")
+        	.attr("height", height + margin.top + margin.bottom)
+        	.append("g")
+        	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 //'http://localhost:8082/getForm?url=http://www.idealist.org/search/v2/advanced'
 d3.json('/getForm?url='+document.getElementById("field1").value, function (error, flare) {
-    if (error) throw error;
+	if (error) throw error;
 
-    document.getElementById("xmls").innerHTML = flare.xmls;
+	document.getElementById("xmls").innerHTML = flare.xmls;
 
-    root = flare;
+	root = flare;
             // console.log(root.children);
 
             root.x0 = height / 2;
             root.y0 = 0;
 
             function collapse(d) {
-                if (d.children) {
-                    d._children = d.children;
-                    d._children.forEach(collapse);
-                    d.children = null;
-                }
+            	if (d.children) {
+            		d._children = d.children;
+            		d._children.forEach(collapse);
+            		d.children = null;
+            	}
             }
 
             root.children.forEach(collapse);
@@ -121,39 +180,39 @@ function update(source) {
 
                 // Normalize for fixed-depth.
                 nodes.forEach(function (d) {
-                    d.y = d.depth * 180;
+                	d.y = d.depth * 180;
                 });
 
                 // Update the nodes…
                 var node = svg.selectAll("g.node")
                 .data(nodes, function (d) {
-                    return d.id || (d.id = ++i);
+                	return d.id || (d.id = ++i);
                 });
 
                 // Enter any new nodes at the parent's previous position.
                 var nodeEnter = node.enter().append("g")
                 .attr("class", "node")
                 .attr("transform", function (d) {
-                    return "translate(" + source.y0 + "," + source.x0 + ")";
+                	return "translate(" + source.y0 + "," + source.x0 + ")";
                 })
                 .on("click", click);
 
                 nodeEnter.append("circle")
                 .attr("r", 1e-6)
                 .style("fill", function (d) {
-                    return d._children ? "lightsteelblue" : "#fff";
+                	return d._children ? "lightsteelblue" : "#fff";
                 });
 
                 nodeEnter.append("text")
                 .attr("x", function (d) {
-                    return d.children || d._children ? -10 : 10;
+                	return d.children || d._children ? -10 : 10;
                 })
                 .attr("dy", ".35em")
                 .attr("text-anchor", function (d) {
-                    return d.children || d._children ? "end" : "start";
+                	return d.children || d._children ? "end" : "start";
                 })
                 .text(function (d) {
-                    return d.name;
+                	return d.name;
                 })
                 .style("fill-opacity", 1e-6);
 
@@ -161,13 +220,13 @@ function update(source) {
                 var nodeUpdate = node.transition()
                 .duration(duration)
                 .attr("transform", function (d) {
-                    return "translate(" + d.y + "," + d.x + ")";
+                	return "translate(" + d.y + "," + d.x + ")";
                 });
 
                 nodeUpdate.select("circle")
                 .attr("r", 4.5)
                 .style("fill", function (d) {
-                    return d._children ? "lightsteelblue" : "#fff";
+                	return d._children ? "lightsteelblue" : "#fff";
                 });
 
                 nodeUpdate.select("text")
@@ -177,7 +236,7 @@ function update(source) {
                 var nodeExit = node.exit().transition()
                 .duration(duration)
                 .attr("transform", function (d) {
-                    return "translate(" + source.y + "," + source.x + ")";
+                	return "translate(" + source.y + "," + source.x + ")";
                 })
                 .remove();
 
@@ -190,15 +249,15 @@ function update(source) {
                 // Update the links…
                 var link = svg.selectAll("path.link")
                 .data(links, function (d) {
-                    return d.target.id;
+                	return d.target.id;
                 });
 
                 // Enter any new links at the parent's previous position.
                 link.enter().insert("path", "g")
                 .attr("class", "link")
                 .attr("d", function (d) {
-                    var o = {x: source.x0, y: source.y0};
-                    return diagonal({source: o, target: o});
+                	var o = {x: source.x0, y: source.y0};
+                	return diagonal({source: o, target: o});
                 });
 
                 // Transition links to their new position.
@@ -210,31 +269,32 @@ function update(source) {
                 link.exit().transition()
                 .duration(duration)
                 .attr("d", function (d) {
-                    var o = {x: source.x, y: source.y};
-                    return diagonal({source: o, target: o});
+                	var o = {x: source.x, y: source.y};
+                	return diagonal({source: o, target: o});
                 })
                 .remove();
 
                 // Stash the old positions for transition.
                 nodes.forEach(function (d) {
-                    d.x0 = d.x;
-                    d.y0 = d.y;
+                	d.x0 = d.x;
+                	d.y0 = d.y;
                 });
             }
 
             // Toggle children on click.
             function click(d) {
-                if (d.children) {
-                    d._children = d.children;
-                    d.children = null;
-                } else {
-                    d.children = d._children;
-                    d._children = null;
-                }
-                update(d);
+            	if (d.children) {
+            		d._children = d.children;
+            		d.children = null;
+            	} else {
+            		d.children = d._children;
+            		d._children = null;
+            	}
+            	update(d);
             }
 
         });
 
 }
 </script>
+</html>
