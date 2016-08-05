@@ -69,6 +69,11 @@ app.get('/getForm', function(req, res){
                    // console.log('the input')
                    
                     //get the previous element
+                    if ($(this).attr("type")=='hidden' &&  hideHiddenElements=='true')
+                    {
+                        return true;
+                    }
+
 
                     var prev=$(this).prev();
                     var parent=$(this).parent();
