@@ -20,6 +20,8 @@ app.get('/',function(req, res){
 })
 app.get('/getForm', function(req, res){
     var resObj={};
+    var hideHiddenElements=req.query['hideHiddenElements'];
+   // console.log(hideHiddenElements)
     resObj['name']='forms';
     resObj['children']=[];
     var counter=1;
@@ -364,7 +366,7 @@ app.get('/getForm', function(req, res){
                     }
                 })
 
-                console.log(formData);
+               // console.log(formData);
                 resObj.children.push(formData);
                 counter++;
 
@@ -452,7 +454,7 @@ app.get('/getForm', function(req, res){
             console.log('It\'s saved! in the app folder');
 
         });
-        console.log(xmlString);
+        //console.log(xmlString);
         resObj.xmls=xmlString;
         res.json(resObj); }, 6000);
   /*
@@ -480,8 +482,8 @@ app.get('/getWordList', function(req, res){
 
 
     var url=req.query['url'];
-    var numberOfKeyWord=req.query['numberOfKeyWord'];
-    console.log(numberOfKeyWord)
+    var numberOfKeyWords=req.query['numberOfKeyWords'];
+    console.log(numberOfKeyWords)
    // console.log(req.query['url'])
    /* fs.writeFile(targetWebSite,xmlString, function (err) {
 
@@ -499,6 +501,7 @@ var wordList=[]
         var $ = cheerio.load(html);
        var table= $('table').first();
        // console.log(table);
+      ///  var tb=[1,2,3,3,3];
         table.find("tr").each( function (i,element) {
             var children = $(this).children();
             var row = {
@@ -507,7 +510,10 @@ var wordList=[]
             };
 
             wordList.push(row);
+            console.log(i)
         });
+
+
 
         res.json(wordList)
 console.log(wordList)

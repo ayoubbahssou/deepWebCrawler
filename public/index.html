@@ -38,7 +38,18 @@
 								</div>
 								<div class="col-sm-5 no-padding-sm">
 									<input type="text" id="field1" class="field-search" name="field1" id="search" placeholder="Entrez l'URL ...">
+									number of key words
+										<select id="field2" class="numberOfKeyWords" name="numberOfKeyWords" id="numberOfKeyWords" placeholder="number of key words ...">
+										<option value=10>10</option>
+										<option value=9>9</option>
+										<option value=8>8</option>
+										<option value=7>7</option>
+									</select>
+									hide hidden elements
+									<input type="radio" id="field3">
+
 								</div>
+
 								<div class="btn-group col-sm-4">
 									<button type="button" class="btn wpc-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 										Action <span class="caret"></span>
@@ -104,7 +115,7 @@ function formQuery() {
 location.href="http://localhost/index.php?url="+document.getElementById("field1").value;
 }	
 function getKeyWords() {
-		$.get( '/getWordList?url='+document.getElementById("field1").value, function( data) {
+		$.get( '/getWordList?url='+document.getElementById("field1").value+'&numberOfKeyWords='+document.getElementById("field2").value, function( data) {
 			console.log(data)
 			var wordList=data;
            /// console.log(typeof(wordList))
@@ -147,7 +158,7 @@ function getKeyWords() {
         	.append("g")
         	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 //'http://localhost:8082/getForm?url=http://www.idealist.org/search/v2/advanced'
-d3.json('/getForm?url='+document.getElementById("field1").value, function (error, flare) {
+d3.json('/getForm?url='+document.getElementById("field1").value+'&hideHiddenElements='+document.getElementById("field3").checked, function (error, flare) {
 	if (error) throw error;
 
 	document.getElementById("xmls").innerHTML = flare.xmls;
