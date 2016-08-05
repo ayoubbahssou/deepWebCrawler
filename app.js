@@ -479,12 +479,21 @@ app.get('/getForm', function(req, res){
 app.get('/getWordList', function(req, res){
 
 
-    var url=req.param('url')
-    console.log(req.param('url'))
+    var url=req.query['url'];
+    var numberOfKeyWord=req.query['numberOfKeyWord'];
+    console.log(numberOfKeyWord)
+   // console.log(req.query['url'])
+   /* fs.writeFile(targetWebSite,xmlString, function (err) {
+
+        if (err) throw err;
+
+        console.log('It\'s saved! in the app folder');
+
+    });*/
     request.post({
         headers: {'content-type' : 'application/x-www-form-urlencoded'},
         url:     'http://www.seowebpageanalyzer.com/',
-        body:    "url="+req.param('url')
+        body:    "url="+url
     }, function(error, response, html){
 var wordList=[]
         var $ = cheerio.load(html);
