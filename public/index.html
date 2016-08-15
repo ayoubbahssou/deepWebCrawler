@@ -113,7 +113,13 @@
 function formQuery() {
 		//$.get( 'http://localhost/index.php?url='+document.getElementById("field1").value)
 location.href="http://localhost/index.php?url="+document.getElementById("field1").value;
-}	
+}
+function getDomainName() {
+	$.get( '/getDomainName?url='+document.getElementById("field1").value, function( data) {
+
+	})
+
+	}
 function getKeyWords() {
 		$.get( '/getWordList?url='+document.getElementById("field1").value+'&numberOfKeyWords='+document.getElementById("field2").value, function( data) {
 			console.log(data)
@@ -130,6 +136,7 @@ function getKeyWords() {
                 result += "</tr>";
             }
             result += "</table>";
+			result+="<a onclick=\"getDomainName()\" class=\"btn\">get domain name</a>";
             document.getElementById("nav").innerHTML =result;
         });
 	}
