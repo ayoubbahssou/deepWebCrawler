@@ -8,6 +8,7 @@ var _=require('underscore');
 var builder = require('xmlbuilder');
 var util = require('util');
 var fs=require('fs');
+var kw=require('./models');
 var app     = express();
 app.use(express.static(__dirname + '/public'));
 app.use(function(req, res, next) {
@@ -518,10 +519,17 @@ var wordList=[]
             console.log(i)
         });
 
+        pathArray = url.split( '/' );
+        targetWebSite = pathArray[2];
+        fs.writeFile(targetWebSite+" key words",util.inspect(wordList), function (err) {
 
+            if (err) throw err;
 
-        res.json(wordList)
-console.log(wordList)
+            console.log('It\'s saved! in the app folder');
+
+        });
+res.json(wordList);
+console.log(wordList);
 
       /*  $('table').each(function(){
 i++;
