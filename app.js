@@ -484,6 +484,11 @@ app.get('/getForm', function(req, res){
 
 
 });
+app.get('/getDomainName', function(req, res) {
+    var url=req.query['url'];
+
+    console.log(url)
+})
 app.get('/getWordList', function(req, res){
 
 
