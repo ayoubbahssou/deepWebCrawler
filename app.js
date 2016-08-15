@@ -488,7 +488,7 @@ app.get('/getWordList', function(req, res){
 
 
     var url=req.query['url'];
-    var numberOfKeyWords=req.query['numberOfKeyWords'];
+    var numberOfKeyWords=parseInt(req.query['numberOfKeyWords']);
     console.log(numberOfKeyWords)
    // console.log(req.query['url'])
    /* fs.writeFile(targetWebSite,xmlString, function (err) {
@@ -516,20 +516,21 @@ var wordList=[]
             };
 
             wordList.push(row);
-            console.log(i)
+           // console.log(i)
         });
-
+        //send ony the number required by the user
+        var slicedWordList=wordList.slice(0, numberOfKeyWords+1);
         pathArray = url.split( '/' );
         targetWebSite = pathArray[2];
-        fs.writeFile(targetWebSite+" key words",util.inspect(wordList), function (err) {
+        fs.writeFile(targetWebSite+" key words",util.inspect(slicedWordList), function (err) {
 
             if (err) throw err;
 
             console.log('It\'s saved! in the app folder');
 
         });
-res.json(wordList);
-console.log(wordList);
+res.json(slicedWordList);
+//console.log(wordList);
 
       /*  $('table').each(function(){
 i++;
