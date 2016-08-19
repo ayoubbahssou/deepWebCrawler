@@ -9,6 +9,16 @@ var builder = require('xmlbuilder');
 var util = require('util');
 var fs=require('fs');
 var kw=require('./models');
+var mysql      = require('mysql');
+var connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'root',
+    password : 'dimasql007',
+    database : 'dwcdb'
+});
+
+connection.connect();
+
 var app     = express();
 app.use(express.static(__dirname + '/public'));
 app.use(function(req, res, next) {
@@ -485,9 +495,83 @@ app.get('/getForm', function(req, res){
 
 });
 app.get('/getDomainName', function(req, res) {
-    var url=req.query['url'];
+    var url = req.query['url'];
+    pathArray = url.split('/');
+    targetWebSite = pathArray[2];
+    var obj = JSON.parse(fs.readFileSync(targetWebSite + " key words", 'utf8'));
+  //  console.log(obj[1].keyword);
+    connection.query('SELECT id_n from english_index where lemma="job"', function(err, rows, fields) {
+        if (!err) {
+            console.log('The solution is: ', rows);
+            var domains = rows[0].id_n.split(' ');
+            console.log(domains)
+         /*   var domainsQuery="('";
+            for (var i=0;i<domains.length-1;i++){
+                domainsQuery+=domains[i]+"','";
+            }
+            var size=domains.length-1
+            domainsQuery+=domains[size]+"')"
+            console.log(domainsQuery)*/
+              var sql='SELECT english from semfield where synset="'+domains[0]+'"';
+      /*   var inserts = [domainsQuery];
+            sql = mysql.format(sql, inserts);
+            //sql+=domainsQuery;*/
+            connection.query(sql,function (err,rows){
+                if (!err) {
+                    console.log('The solution is: ', rows);
+                    res.json(rows[0])
+                }else
+                    console.log(err);
+            })
 
-    console.log(url)
+        } else
+            console.log('Error while performing Query.');
+    });
+
+   // connection.end();
+  /*  sql.connect("mssql://root:dimasql007@localhost/dwcdb").then(function () {
+       console.log('fff')
+       new sql.Request().query('select * from english_index where lemma="job"').then(function(recordset) {
+          
+           console.log(recordset);
+       }).catch(function(err) {
+           // ... query error checks
+       
+       });
+   })*/
+    //res.json(obj)
+
+    /*  request.post({
+     headers: {'content-type' : 'application/x-www-form-urlencoded',
+     ' Host':' multiwordnet.fbk.eu',
+     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0',
+     'Accept-Language': 'en-US,en;q=0.5',
+     'Accept-Encoding': 'gzip, deflate',
+     'Referer': 'http://multiwordnet.fbk.eu/online/multiwordnet-head.php',
+     'Cookie': 'countvisit=4129717; PHPSESSID=oujmvdap5aud85j4pba0ptidu0',
+     'Connection': 'keep-alive'
+     },
+     url:     'http://multiwordnet.fbk.eu/online/multiwordnet-main-frame.php',
+     data:    {
+     language:'english',
+     field:'word',
+     word:obj[1].keyword,
+     go:'Search'
+     }
+     }, function(error, response, html){*/
+  /*  request("http://multiwordnet.fbk.eu/online/multiwordnet.php", function(error, response){
+        var cookie = response.headers['set-cookie']
+    request.post({
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'Cookie': cookie
+        },
+        url: 'http://multiwordnet.fbk.eu/online/multiwordnet-main-frame.php',
+        body: "language=english&field=word&word=sign&go=Search"
+    }, function (error, response, html) {
+        console.log(html)
+    })
+})*/
 })
 app.get('/getWordList', function(req, res){
 
@@ -527,7 +611,8 @@ var wordList=[]
         var slicedWordList=wordList.slice(0, numberOfKeyWords+1);
         pathArray = url.split( '/' );
         targetWebSite = pathArray[2];
-        fs.writeFile(targetWebSite+" key words",util.inspect(slicedWordList), function (err) {
+//        fs.writeFile(targetWebSite+" key words",util.inspect(slicedWordList), function (err) {
+        fs.writeFile(targetWebSite+" key words",JSON.stringify(slicedWordList), function (err) {
 
             if (err) throw err;
 

@@ -89,6 +89,7 @@
 				<div class="col-sm-12">
 					<div class="heading">Tableau des mots</div>
 					<div id="nav" class="col-sm-6"></div>
+					<p id="domain"></p>
 				</div>
 			</div>
 		</div>
@@ -115,8 +116,18 @@ function formQuery() {
 location.href="http://localhost/index.php?url="+document.getElementById("field1").value;
 }
 function getDomainName() {
+	/*$.ajax({
+		type: "POST",
+		data: keywords,
+		url: "/getDomainName",
+		success: function(domain){
+			$('.answer').html(domain);
+		}
+	});*/
 	$.get( '/getDomainName?url='+document.getElementById("field1").value, function( data) {
+//alert(data)
 
+		document.getElementById("domain").innerHTML =data.english;
 	})
 
 	}
@@ -131,7 +142,7 @@ function getKeyWords() {
                // console.log(word);
                 //console.log(word.frequency)
                 result += "<tr>";
-                result += "<td>"+word.keyword+"</td>";
+                result += "<td id="+i+">"+word.keyword+"</td>";
                 result += "<td>"+word.frequency+"</td>";
                 result += "</tr>";
             }
