@@ -204,19 +204,24 @@ app.get('/getForm', function(req, res){
                                 var child={}
                                 child['name']=$(this).attr("name");
                                 child['children']=[];
+                                var radio={}
+                                radio['tagName']=$(this).attr("name");
+                                radio['name']=label;
+                                radio['options']=[]
+                                radios.push(radio)
                                 formData.children[cnt].children.push(child);
                             }
                             var child={};
                             child['name']=label;
                             child['source']=source;
-                            var input={}
+                          /*  var input={}
 
                             input["name"]=label;
-                            input['tagName']=name;
+                            input['tagName']=name;*/
                            
                             //child['children']=[];
                             formData.children[cnt].children[cntt].children.push(child);
-                            radios.push(input);
+                            radios[cntt].options.push($(this).attr("value"));
                         }else{
                             var type=''
                             if($(this).attr("type")=='hidden'){
@@ -256,21 +261,27 @@ app.get('/getForm', function(req, res){
                             }
                             if(cnt==formData.children.length){
                                 var child={}
+                                var radio={}
+                                radio['tagName']=$(this).attr("name");
+                                radio['name']=label;
+                                radio['options']=[]
+                                radios.push(radio)
                                 child['name']=$(this).attr("name");
+
                                 child['children']=[]
                                 formData.children.push(child);
                             }
                             var child={};
                             child['name']=label;
                             child['source']=source;
-                            var input={}
+/*                            var input={}
 
                             input["name"]=label;
-                            input['tagName']=name;
+                            input['tagName']=name;*/
 
                             // child['children']=[];
                             formData.children[cnt].children.push(child);
-                            radios.push(input);
+                            radios[cnt].options.push($(this).attr("value"));
                         }
                         else{
                             //if it's not radio then we simply add it to the formData
