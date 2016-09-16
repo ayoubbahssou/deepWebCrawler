@@ -35,6 +35,7 @@ app.get('/getForm', function(req, res){
    // console.log(hideHiddenElements)
     resObj['name']='forms';
     resObj['children']=[];
+    var formStructures=[];
     var counter=1;
     //URLs we're testing with
     url5='http://www.idealist.org/search/v2/advanced'
@@ -63,6 +64,14 @@ app.get('/getForm', function(req, res){
                 var formDom = $(this);
                 //this is the object that well contain the form information
                 var formData = {};
+                //prepare the json for casper js
+                var formStructure={};
+                var selects=[];
+                var radios=[];
+                var simpleInputs=[];
+
+
+
                 formData['name']='form '+counter;
 
                 formData['children']=[]
@@ -78,7 +87,11 @@ app.get('/getForm', function(req, res){
                 //we'll process each input field
                 formDom.find("input").each( function (index) {
                    // console.log('the input')
-                   
+
+                    var name=$(this).attr("name");
+
+
+
                     //get the previous element
                     if ($(this).attr("type")=='hidden' &&  hideHiddenElements=='true')
                     {
@@ -193,13 +206,17 @@ app.get('/getForm', function(req, res){
                                 child['children']=[];
                                 formData.children[cnt].children.push(child);
                             }
-
                             var child={};
                             child['name']=label;
                             child['source']=source;
+                            var input={}
+
+                            input["name"]=label;
+                            input['tagName']=name;
+                           
                             //child['children']=[];
                             formData.children[cnt].children[cntt].children.push(child);
-
+                            radios.push(input);
                         }else{
                             var type=''
                             if($(this).attr("type")=='hidden'){
@@ -210,8 +227,14 @@ app.get('/getForm', function(req, res){
                             child['type']=$(this).attr("type");
                             child['source']=source;
                             child['name']=label+type;
-                          //  child['children']=[];
+                            var input={}
+
+                            input["name"]=label;
+                            input['tagName']=name;
+
+                            //  child['children']=[];
                             formData.children[cnt].children.push(child);
+                            simpleInputs.push(input);
                             //}
 
                         }
@@ -240,8 +263,14 @@ app.get('/getForm', function(req, res){
                             var child={};
                             child['name']=label;
                             child['source']=source;
-                           // child['children']=[];
+                            var input={}
+
+                            input["name"]=label;
+                            input['tagName']=name;
+
+                            // child['children']=[];
                             formData.children[cnt].children.push(child);
+                            radios.push(input);
                         }
                         else{
                             //if it's not radio then we simply add it to the formData
@@ -254,9 +283,15 @@ app.get('/getForm', function(req, res){
                             child['type']=$(this).attr("type");
                             child['source']=source;
                             child['name']=label+type;
+
+                            var input={}
+
+                            input["name"]=label;
+                            input['tagName']=name;
+
                             //child['children']=[];
                             formData.children.push(child);
-
+                            simpleInputs.push(input);
                         }
 
                     }
@@ -270,7 +305,7 @@ app.get('/getForm', function(req, res){
             });
                 formDom.find("select").each( function () {
                     //console.log($(this).toString())
-
+                    var name=$(this).attr("name");
                     var prev=$(this).prev();
                     //get the parent's previous element
                     var prevparent=$(this).parent().prev();
@@ -340,6 +375,8 @@ app.get('/getForm', function(req, res){
 
                         var children = $(this)['0'].children;
                         var optionsArray = [];
+                        var selectOptions=[]
+
                         var options = children.map(function (i, option) {
 
                             if (i.name == 'option') {
@@ -347,20 +384,29 @@ app.get('/getForm', function(req, res){
                                 child['name']=i.children[0].data;
                                 //child['children']=[];
                                 optionsArray.push(child);
+                                selectOptions.push(i.children[0].data)
                                 //console.log(i.children[0].data)
                             }
 
                             //return option.value;
                         });
                         var child={}
+                        var input={}
                         child['name']=label;
                         child['type']="select";
                         child['children']=optionsArray
+                        input["name"]=label;
+                        input['tagName']=name;
+                        input["options"] =selectOptions;
+
+
 
                         formData.children[cnt].children.push(child);
+                        selects.push(input);
                     }else {
                         var children = $(this)['0'].children;
                         var optionsArray = []
+                        var selectOptions=[]
                         var options = children.map(function (i, option) {
 
                             if (i.name == 'option') {
@@ -368,20 +414,33 @@ app.get('/getForm', function(req, res){
                                 child['name']=i.children[0].data;
                                 //child['children']=[];
                                 optionsArray.push(child);
+                                selectOptions.push(i.children[0].data)
+
                             }
 
                             //return option.value;
                         });
                         var child={}
+                        var input={}
+
                         child['name']=label;
                         child['type']="select";
                         //child['children']=[];
                         child['children']=optionsArray;
+                       input["name"]=label;
+                        input['tagName']=name;
+                        input["options"] =selectOptions;
 
                         formData.children.push(child);
+                        selects.push(input);
+
                     }
                 })
-
+                formStructure ["selects"]=selects;
+                formStructure["simpleInputs"]=simpleInputs;
+                formStructure["radios"]=radios;
+                formStructure["action"]=$(this).attr("action");
+                formStructures.push(formStructure);
                // console.log(formData);
                 resObj.children.push(formData);
                 counter++;
@@ -470,8 +529,16 @@ app.get('/getForm', function(req, res){
             console.log('It\'s saved! in the app folder');
 
         });
+        fs.writeFile(targetWebSite+" form structure",JSON.stringify(formStructures), function (err) {
+
+            if (err) throw err;
+
+            console.log('It\'s saved! in the app folder');
+
+        });
         //console.log(xmlString);
         resObj.xmls=xmlString;
+        resObj.formStructures=formStructures;
         res.json(resObj); }, 6000);
   /*
   * <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
