@@ -26,8 +26,12 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+
 app.get('/',function(req, res){
     res.render(index.html);
+})
+app.get('/formSubmitter',function(req, res){
+    res.render('formSubmitter.html')
 })
 app.get('/getForm', function(req, res){
     var resObj={};
@@ -447,10 +451,16 @@ app.get('/getForm', function(req, res){
 
                     }
                 })
-                formStructure ["selects"]=selects;
+                formStructure ["definedChoices"]=selects;
                 formStructure["simpleInputs"]=simpleInputs;
-                formStructure["radios"]=radios;
+          //      formStructure["radios"]=radios;
+
+                formStructure ["definedChoices"].push.apply(formStructure ["definedChoices"],radios);
                 formStructure["action"]=$(this).attr("action");
+                //create the counters
+             /*   for(var i=0;i<formStructure.radios.length)
+
+              */
                 formStructures.push(formStructure);
                // console.log(formData);
                 resObj.children.push(formData);
