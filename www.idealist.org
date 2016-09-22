@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<xs:schema xmlns="http://www.w3.com" targetNamespace="http://www.w3.com" elementFormDefault="qualified">
+  <xs:element name="forms">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="form 1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="qs (hidden)" type="xs:string"/>
+              <xs:element name="search_language (hidden)" type="xs:string"/>
+              <xs:element name="search_location_language (hidden)" type="xs:string"/>
+              <xs:element name="search_user_query" type="xs:string"/>
+              <xs:element name="search_location_name" type="xs:string"/>
+              <xs:element name="search_type">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:enumeration value="All types"/>
+                    <xs:enumeration value="Jobs"/>
+                    <xs:enumeration value="Internships"/>
+                    <xs:enumeration value="Volunteer Opps"/>
+                    <xs:enumeration value="Action Opps"/>
+                    <xs:enumeration value="People"/>
+                    <xs:enumeration value="Organizations"/>
+                    <xs:enumeration value="Events"/>
+                    <xs:enumeration value="Blogs"/>
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="form 2">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="whatFields">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="search_asset_type" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="whereFields">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Where?" type="xs:string"/>
+                    <xs:element name="Where? (hidden)" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="11">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="One or more of these words:" type="xs:string"/>
+                    <xs:element name="All these words:" type="xs:string"/>
+                    <xs:element name="This exact wording or phrase:" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="14">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Any of these unwanted words:" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="formButtons">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Sort by:">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Relevance"/>
+                          <xs:enumeration value="Name"/>
+                          <xs:enumeration value="Recently modified"/>
+                          <xs:enumeration value="Recently posted"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

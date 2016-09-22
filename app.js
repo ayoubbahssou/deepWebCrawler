@@ -458,9 +458,15 @@ app.get('/getForm', function(req, res){
                 formStructure ["definedChoices"].push.apply(formStructure ["definedChoices"],radios);
                 formStructure["action"]=$(this).attr("action");
                 //create the counters
-             /*   for(var i=0;i<formStructure.radios.length)
-
-              */
+                var coordinates=[]
+                for(var i=0;i<formStructure.definedChoices.length;i++){
+                 coordinates[i]=formStructure.definedChoices[i].options.length;
+                }
+                formStructure.coordinates=coordinates;
+                formStructure['lat']=0;
+                formStructure['long']=0;
+                formStructure['coorx']=0;
+                formStructure['coory']=0;
                 formStructures.push(formStructure);
                // console.log(formData);
                 resObj.children.push(formData);

@@ -2,9 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Form Submitter</title>
 </head>
 <body>
+<h1>pick an option</h1>
+<form action="/submitForm">
 
+    form number:
+    <input type="text" name="formNumber" ><br>
+
+
+    <input type="radio" name="submitOptions" value="default">
+    submit with default values:<br>
+
+    <input type="radio" name="submitOptions" value="onlyOneByOne">
+    submit after fixing just one field :<br>
+
+    <input type="radio" name="submitOptions" value="oneByOne">
+    submit after fixing all the fields but one:<br>
+
+
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
 </body>
 </html>

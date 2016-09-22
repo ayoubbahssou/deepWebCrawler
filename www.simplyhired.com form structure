@@ -1,0 +1,3 @@
+[{"defined Choices":[],"simpleInputs":[{"name":"Keywords","tagName":"q"},{"name":"Location","tagName":"l"}],"action":"/search"},
+{"defined Choices":[],"simpleInputs":[{"name":"Keywords","tagName":"q"},{"name":"Keywords","tagName":"l"}],"action":"/search"},
+{"defined Choices":[],"simpleInputs":[{"name":"q","tagName":"q"},{"name":"l","tagName":"l"}],"action":"/search"}]

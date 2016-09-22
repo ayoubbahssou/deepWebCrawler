@@ -10,6 +10,11 @@
     "cheerio": "latest",
     "underscore": "~1.8.3",
     "util": "~0.10.3",
-    "xmlbuilder":"~8.2.2"
+    "xmlbuilder": "~8.2.2",
+    "fs": "0.0.2",
+    "mongoose": "~4.5.8",
+    "q": "~1.4.1",
+    "mssql": "~3.3.0",
+    "mysql": "~2.11.1"
   }
 }
